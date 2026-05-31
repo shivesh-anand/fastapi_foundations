@@ -2,7 +2,28 @@ from fastapi import FastAPI
 
 app = FastAPI()
 
+db = [
+    {"id": 1, "size": "s", "fuel": "gasoline", "doors": 2, "transmission": "auto"},
+    {"id": 2, "size": "s", "fuel": "electric", "doors": 3, "transmission": "auto"},
+    {"id": 3, "size": "m", "fuel": "gasoline", "doors": 4, "transmission": "manual"},
+    {"id": 4, "size": "m", "fuel": "electric", "doors": 2, "transmission": "auto"},
+    {"id": 5, "size": "m", "fuel": "electric", "doors": 3, "transmission": "auto"},
+    {"id": 6, "size": "l", "fuel": "gasoline", "doors": 4, "transmission": "auto"},
+    {"id": 7, "size": "l", "fuel": "electric", "doors": 4, "transmission": "auto"},
+    {"id": 8, "size": "l", "fuel": "gasoline", "doors": 4, "transmission": "manual"},
+]
+
 @app.get("/")
-async def welcome():
+async def welcome(name):
     """Return a friendly welcome message."""
-    return {"message": "Welcome to the Car Sharing Service!"}
+    return {"message": f"Welcome {name} to the Car Sharing Service!"}
+
+@app.get("/api/cars")
+def get_cars(size:str|None = None, doors:int|None = None) -> list:
+    """Return a friendly cars list."""
+    result = db
+    if size:
+        result = [car for car in result if car["size"] == size]
+    if doors:
+        result = [car for car in result if car["doors"] >= doors]
+    return result
